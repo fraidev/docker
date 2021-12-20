@@ -10,13 +10,13 @@ func main() {
 	fmt.Println("Started")
 	err := createSnapshot(false)
 	if err != nil {
-		log.Fatalln("erro full")
+		log.Fatalln(err)
 	}
 	err = createSnapshot(true)
 	if err != nil {
-		fmt.Println("erro roling")
+		log.Fatalln(err)
 	}
-	fmt.Println("Started")
+	fmt.Println("Finished")
 }
 
 func createSnapshot(roling bool) error {
