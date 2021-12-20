@@ -14,13 +14,13 @@ func main() {
 	}
 	err = createSnapshot(true)
 	if err != nil {
-		log.Fatalln("erro roling")
+		fmt.Println("erro roling")
 	}
 	fmt.Println("Started")
 }
 
 func createSnapshot(roling bool) error {
-	cmdToExecute := "tezos-node snapshot export --data-dir /var/run/tezos/node/data"
+	cmdToExecute := "/usr/local/bin/tezos-node snapshot export --data-dir /var/run/tezos/node/data"
 
 	if roling {
 		cmdToExecute = cmdToExecute + " --rolling"
