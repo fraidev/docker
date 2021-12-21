@@ -20,13 +20,15 @@ func main() {
 }
 
 func createSnapshot(roling bool) error {
-	cmdToExecute := "/usr/local/bin/tezos-node snapshot export --data-dir /var/run/tezos/node/data"
+	cmdToExecute := "/usr/local/bin/tezos-node"
+
+	args := []string{"snapshot", "export", "--data-dir", "/var/run/tezos/node/data"}
 
 	if roling {
-		cmdToExecute = cmdToExecute + " --rolling"
+		args = append(args, "--roling")
 	}
 
-	cmd := exec.Command(cmdToExecute)
+	cmd := exec.Command(cmdToExecute, args...)
 	stdout, err := cmd.Output()
 	if err != nil {
 		return err
