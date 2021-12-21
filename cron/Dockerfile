@@ -8,4 +8,5 @@ RUN go build -o /main
 FROM tezos/tezos:master
 RUN sudo apk add curl lz4 xz jq
 COPY --from=0 /main ./
-CMD ["/main"]
+ENTRYPOINT ["/main"]
+CMD []
