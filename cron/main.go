@@ -22,7 +22,7 @@ func main() {
 func createSnapshot(roling bool) error {
 	cmdToExecute := "/usr/local/bin/tezos-node"
 
-	args := []string{"snapshot", "export", "--data-dir", "/var/run/tezos/node/data", "--network" ,"hangzhounet", "--config-file", "/var/run/tezos/node/data/config.json"}
+	args := []string{"snapshot", "export", "--data-dir", "/var/run/tezos/node/data"}
 
 	if roling {
 		args = append(args, "--roling")
