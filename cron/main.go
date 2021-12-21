@@ -20,15 +20,15 @@ func main() {
 	fmt.Println("Finished")
 }
 
-func createSnapshot(roling bool) error {
+func createSnapshot(rolling bool) error {
 	var out bytes.Buffer
 	var stderr bytes.Buffer
 	cmdToExecute := "/usr/local/bin/tezos-node"
 
 	args := []string{"snapshot", "export", "--data-dir", "/var/run/tezos/node/data"}
 
-	if roling {
-		args = append(args, "--roling")
+	if rolling {
+		args = append(args, "--rolling")
 	}
 
 	cmd := exec.Command(cmdToExecute, args...)
