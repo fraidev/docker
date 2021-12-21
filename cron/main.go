@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"os/exec"
@@ -20,6 +21,8 @@ func main() {
 }
 
 func createSnapshot(roling bool) error {
+	var out bytes.Buffer
+	var stderr bytes.Buffer
 	cmdToExecute := "/usr/local/bin/tezos-node"
 
 	args := []string{"snapshot", "export", "--data-dir", "/var/run/tezos/node/data"}
@@ -29,11 +32,14 @@ func createSnapshot(roling bool) error {
 	}
 
 	cmd := exec.Command(cmdToExecute, args...)
-	stdout, err := cmd.Output()
+	cmd.Stdout = &out
+	cmd.Stderr = &stderr
+	err := cmd.Run()
 	if err != nil {
+		fmt.Println(fmt.Sprint(err) + ": " + stderr.String())
 		return err
 	}
-	fmt.Println(string(stdout))
+	fmt.Println("Result: " + out.String())
 
 	return nil
 }
