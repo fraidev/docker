@@ -29,11 +29,15 @@ func main() {
 	// maxDays := viper.GetInt("MAX_DAYS")
 	ctx := context.Background()
 
+	fmt.Println("Creating full snapshot now")
+
 	// Create Snapshots
 	err := createSnapshot(false)
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
+
+	fmt.Println("Creating rolling snapshot now")
 
 	err = createSnapshot(true)
 	if err != nil {
@@ -57,6 +61,7 @@ func main() {
 		log.Fatalf("os.Open: %v", err)
 	}
 
+	fmt.Println("Getting Files")
 	// Open local fileFull.
 	fileFull, err := os.Open(folderName + "/" + snapshotfileNameFull)
 	if err != nil {
@@ -65,9 +70,11 @@ func main() {
 	defer fileFull.Close()
 
 	// Upload an snapshot
+	fmt.Println("Uploading snapshot")
 	err = uploadSnapshot(ctx, client, bucketName, fileFull)
 
 	// Open local file.
+	fmt.Println("Getting Files")
 	fileRolling, err := os.Open(folderName + "/" + snapshotfileNamesRolling)
 	if err != nil {
 		log.Fatalf("os.Open: %v", err)
@@ -75,15 +82,18 @@ func main() {
 	defer fileRolling.Close()
 
 	// Upload an snapshot
+	fmt.Println("Uploading snapshot")
 	err = uploadSnapshot(ctx, client, bucketName, fileRolling)
 
 	// Delete folder
+	fmt.Println("Deleting folder")
 	err = os.RemoveAll(folderName)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Delete old Files
+	fmt.Println("Deleting old snapshots")
 	deleteOldSnapshots(ctx, client, bucketName, maxDays)
 }
 
