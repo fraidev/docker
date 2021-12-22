@@ -109,8 +109,6 @@ func main() {
 }
 
 func createSnapshot(rolling bool) error {
-	var out bytes.Buffer
-	var stderr bytes.Buffer
 	bin := "/usr/local/bin/tezos-node"
 
 	args := []string{"snapshot", "export", "--data-dir", "/var/run/tezos/node/data"}
