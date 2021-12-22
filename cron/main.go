@@ -37,9 +37,19 @@ func main() {
 	// 	log.Fatalln(err.Error())
 	// }
 
+	f, err := os.Open("/usr/local/bin/tezos-node")
+	if err != nil {
+		fmt.Println("DEU ERRO ACHANDO O BINARIO")
+		log.Fatalln(err.Error())
+	}
+	fmt.Println("EXISTE O BINARIO")
+	fmt.Println("O BINARIO SE CHAMA %v", f.Name())
+
+
+
 	fmt.Println("Creating rolling snapshot now")
 
-	err := createSnapshot(true)
+	err = createSnapshot(true)
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
