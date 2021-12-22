@@ -37,22 +37,17 @@ func main() {
 	// 	log.Fatalln(err.Error())
 	// }
 
-	f, err := os.Open("/usr/local/bin/tezos-node")
-	if err != nil {
-		fmt.Println("DEU ERRO ACHANDO O BINARIO")
-		log.Fatalln(err.Error())
-	}
-	fmt.Println("EXISTE O BINARIO")
-	fmt.Printf("O BINARIO SE CHAMA %v \n", f.Name())
-
 	fmt.Println("Creating rolling snapshot now")
 
-	err = createSnapshot(true)
+	err := createSnapshot(true)
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
 
 	snapshotfileNameFull, snapshotfileNamesRolling, err := getSnapshotNames()
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
 
 	fmt.Printf("snapshotfileNameFull: %v \n", snapshotfileNameFull)
 	fmt.Printf("snapshotfileNamesRolling: %v \n", snapshotfileNamesRolling)
@@ -91,11 +86,11 @@ func main() {
 	err = uploadSnapshot(ctx, client, bucketName, fileRolling)
 
 	// Delete local files
-	fmt.Println("Deleting snapshot file full")
-	err = os.Remove(snapshotfileNameFull)
-	if err != nil {
-		log.Fatal(err)
-	}
+	// fmt.Println("Deleting snapshot file full")
+	// err = os.Remove(snapshotfileNameFull)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
 	fmt.Println("Deleting snapshot file rolling")
 	err = os.Remove(snapshotfileNamesRolling)
@@ -123,23 +118,38 @@ func createSnapshot(rolling bool) error {
 	cmd.Stdout = io.MultiWriter(os.Stdout, &outBuf)
 	err := cmd.Run()
 	if err != nil {
-		fmt.Println(err.Error() + ": " + errBuf.String())
 		return err
 	}
-	fmt.Println("Result: " + outBuf.String())
 
 	return nil
 }
 
 func getSnapshotNames() (string, string, error) {
+	var errBuf, outBuf bytes.Buffer
 	cmd := exec.Command("/bin/ls", "-1a")
-	stdout, err := cmd.Output()
-	snapshotfileNames := strings.Split(string(stdout), "\n")
+	cmd.Stderr = io.MultiWriter(os.Stderr, &errBuf)
+	cmd.Stdout = io.MultiWriter(os.Stdout, &outBuf)
+	err := cmd.Run()
 	if err != nil {
 		return "", "", err
 	}
+	snapshotfileNames := strings.Split(outBuf.String(), "\n")
 
-	return snapshotfileNames[0], snapshotfileNames[1], nil
+	fmt.Print(outBuf.String())
+	fmt.Printf("len: %d \n", len(snapshotfileNames))
+
+	var rolling, full string
+
+	for _, fileName := range snapshotfileNames {
+		if strings.Contains(fileName, "rolling") {
+			rolling = fileName
+		}
+		if strings.Contains(fileName, "full") {
+			full = fileName
+		}
+	}
+
+	return rolling, full, nil
 }
 
 func uploadSnapshot(ctx context.Context, client *storage.Client, bucketName string, file *os.File) error {
