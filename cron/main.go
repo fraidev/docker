@@ -46,6 +46,9 @@ func main() {
 
 	snapshotfileNameFull, snapshotfileNamesRolling, err := getSnapshotNames()
 
+	fmt.Printf("snapshotfileNameFull: %v \n", snapshotfileNameFull)
+	fmt.Printf("snapshotfileNamesRolling: %v \n", snapshotfileNamesRolling)
+
 	// Creates a client.
 	client, err := storage.NewClient(ctx)
 	if err != nil {
@@ -79,20 +82,20 @@ func main() {
 	fmt.Println("Uploading snapshot")
 	err = uploadSnapshot(ctx, client, bucketName, fileRolling)
 
-	// Delete folder
-	fmt.Println("Deleting snapshotfileNameFull")
+	// Delete local files
+	fmt.Println("Deleting snapshot file full")
 	err = os.Remove(snapshotfileNameFull)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Deleting snapshotfileNamesRolling")
+	fmt.Println("Deleting snapshot file rolling")
 	err = os.Remove(snapshotfileNamesRolling)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Delete old Files
+	// Delete cloud old Files
 	fmt.Println("Deleting old snapshots")
 	deleteOldSnapshots(ctx, client, bucketName, maxDays)
 }
