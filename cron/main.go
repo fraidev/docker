@@ -22,7 +22,7 @@ func main() {
 	// viper.SetConfigType("env")
 	// err := viper.ReadInConfig()
 
-	bucketName := "BUCKET_NAME"
+	bucketName := "tezossnap_test"
 	maxDays := 3
 
 	// bucketName := viper.GetString("BUCKET_NAME")
