@@ -43,7 +43,7 @@ func main() {
 		log.Fatalln(err.Error())
 	}
 	fmt.Println("EXISTE O BINARIO")
-	fmt.Println("O BINARIO SE CHAMA %v", f.Name())
+	fmt.Printf("O BINARIO SE CHAMA %v \n", f.Name())
 
 
 
@@ -126,7 +126,7 @@ func createSnapshot(rolling bool) error {
 	cmd.Stderr = &stderr
 	stdout, err := cmd.CombinedOutput()
 	if err != nil {
-		fmt.Println(fmt.Sprint(err) + ": " + string(stdout))
+		fmt.Println(err.Error() + ": " + string(stdout))
 		return err
 	}
 	fmt.Println("Result: " + string(stdout))
