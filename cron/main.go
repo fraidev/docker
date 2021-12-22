@@ -55,15 +55,9 @@ func main() {
 
 	// Create folder
 
-	folderName := "snapshots"
-	err = os.Mkdir(folderName, os.ModeDir)
-	if err != nil {
-		log.Fatalf("os.Open: %v", err)
-	}
-
 	fmt.Println("Getting Files")
 	// Open local fileFull.
-	fileFull, err := os.Open(folderName + "/" + snapshotfileNameFull)
+	fileFull, err := os.Open(snapshotfileNameFull)
 	if err != nil {
 		log.Fatalf("os.Open: %v", err)
 	}
@@ -75,7 +69,7 @@ func main() {
 
 	// Open local file.
 	fmt.Println("Getting Files")
-	fileRolling, err := os.Open(folderName + "/" + snapshotfileNamesRolling)
+	fileRolling, err := os.Open(snapshotfileNamesRolling)
 	if err != nil {
 		log.Fatalf("os.Open: %v", err)
 	}
@@ -86,8 +80,14 @@ func main() {
 	err = uploadSnapshot(ctx, client, bucketName, fileRolling)
 
 	// Delete folder
-	fmt.Println("Deleting folder")
-	err = os.RemoveAll(folderName)
+	fmt.Println("Deleting snapshotfileNameFull")
+	err = os.Remove(snapshotfileNameFull)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Deleting snapshotfileNamesRolling")
+	err = os.Remove(snapshotfileNamesRolling)
 	if err != nil {
 		log.Fatal(err)
 	}
