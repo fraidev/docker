@@ -72,6 +72,9 @@ func main() {
 	// // Upload an snapshot
 	// fmt.Println("Uploading snapshot")
 	// err = uploadSnapshot(ctx, client, bucketName, fileFull)
+	// if err != nil {
+	// 	log.Fatalln(err.Error())
+	// }
 
 	// Open local file.
 	fmt.Println("Getting Files")
@@ -84,6 +87,9 @@ func main() {
 	// Upload an snapshot
 	fmt.Println("Uploading snapshot")
 	err = uploadSnapshot(ctx, client, bucketName, fileRolling)
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
 
 	// Delete local files
 	// fmt.Println("Deleting snapshot file full")
