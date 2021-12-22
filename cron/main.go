@@ -45,8 +45,6 @@ func main() {
 	fmt.Println("EXISTE O BINARIO")
 	fmt.Printf("O BINARIO SE CHAMA %v \n", f.Name())
 
-
-
 	fmt.Println("Creating rolling snapshot now")
 
 	err = createSnapshot(true)
@@ -121,15 +119,16 @@ func createSnapshot(rolling bool) error {
 		args = append(args, "--rolling")
 	}
 
+	var errBuf, outBuf bytes.Buffer
 	cmd := exec.Command(bin, args...)
-	cmd.Stdout = &out
-	cmd.Stderr = &stderr
-	stdout, err := cmd.CombinedOutput()
+	cmd.Stderr = io.MultiWriter(os.Stderr, &errBuf)
+	cmd.Stdout = io.MultiWriter(os.Stdout, &outBuf)
+	err := cmd.Run()
 	if err != nil {
-		fmt.Println(err.Error() + ": " + string(stdout))
+		fmt.Println(err.Error() + ": " + errBuf.String())
 		return err
 	}
-	fmt.Println("Result: " + string(stdout))
+	fmt.Println("Result: " + outBuf.String())
 
 	return nil
 }
