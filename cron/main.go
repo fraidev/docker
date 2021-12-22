@@ -149,7 +149,7 @@ func getSnapshotNames() (string, string, error) {
 		}
 	}
 
-	return rolling, full, nil
+	return full, rolling, nil
 }
 
 func uploadSnapshot(ctx context.Context, client *storage.Client, bucketName string, file *os.File) error {
