@@ -29,17 +29,17 @@ func main() {
 	// maxDays := viper.GetInt("MAX_DAYS")
 	ctx := context.Background()
 
-	fmt.Println("Creating full snapshot now")
+	// fmt.Println("Creating full snapshot now")
 
-	// Create Snapshots
-	err := createSnapshot(false)
-	if err != nil {
-		log.Fatalln(err.Error())
-	}
+	// // Create Snapshots
+	// err := createSnapshot(false)
+	// if err != nil {
+	// 	log.Fatalln(err.Error())
+	// }
 
 	fmt.Println("Creating rolling snapshot now")
 
-	err = createSnapshot(true)
+	err := createSnapshot(true)
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
@@ -58,17 +58,17 @@ func main() {
 
 	// Create folder
 
-	fmt.Println("Getting Files")
-	// Open local fileFull.
-	fileFull, err := os.Open(snapshotfileNameFull)
-	if err != nil {
-		log.Fatalf("os.Open: %v", err)
-	}
-	defer fileFull.Close()
+	// fmt.Println("Getting Files")
+	// // Open local fileFull.
+	// fileFull, err := os.Open(snapshotfileNameFull)
+	// if err != nil {
+	// 	log.Fatalf("os.Open: %v", err)
+	// }
+	// defer fileFull.Close()
 
-	// Upload an snapshot
-	fmt.Println("Uploading snapshot")
-	err = uploadSnapshot(ctx, client, bucketName, fileFull)
+	// // Upload an snapshot
+	// fmt.Println("Uploading snapshot")
+	// err = uploadSnapshot(ctx, client, bucketName, fileFull)
 
 	// Open local file.
 	fmt.Println("Getting Files")
@@ -103,7 +103,7 @@ func main() {
 func createSnapshot(rolling bool) error {
 	var out bytes.Buffer
 	var stderr bytes.Buffer
-	cmdToExecute := "/usr/local/bin/tezos-node"
+	bin := "/usr/local/bin/tezos-node"
 
 	args := []string{"snapshot", "export", "--data-dir", "/var/run/tezos/node/data"}
 
@@ -111,21 +111,21 @@ func createSnapshot(rolling bool) error {
 		args = append(args, "--rolling")
 	}
 
-	cmd := exec.Command(cmdToExecute, args...)
+	cmd := exec.Command(bin, args...)
 	cmd.Stdout = &out
 	cmd.Stderr = &stderr
-	err := cmd.Run()
+	stdout, err := cmd.CombinedOutput()
 	if err != nil {
-		fmt.Println(fmt.Sprint(err) + ": " + stderr.String())
+		fmt.Println(fmt.Sprint(err) + ": " + string(stdout))
 		return err
 	}
-	fmt.Println("Result: " + out.String())
+	fmt.Println("Result: " + string(stdout))
 
 	return nil
 }
 
 func getSnapshotNames() (string, string, error) {
-	cmd := exec.Command("ls", "-1a")
+	cmd := exec.Command("/bin/ls", "-1a")
 	stdout, err := cmd.Output()
 	snapshotfileNames := strings.Split(string(stdout), "\n")
 	if err != nil {
