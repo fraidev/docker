@@ -135,10 +135,13 @@ func getSnapshotNames() (string, string, error) {
 	return snapshotfileNames[0], snapshotfileNames[1], nil
 }
 
-func uploadSnapshot(ctx context.Context, client *storage.Client, bucketName string, file io.Reader) error {
+func uploadSnapshot(ctx context.Context, client *storage.Client, bucketName string, file *os.File) error {
 	currentTime := time.Now()
 	currentDate := currentTime.Format("2006.01.02")
-	objectHandler := client.Bucket(bucketName).Object(currentDate + "/full")
+
+	fmt.Printf("Current Date is %q.\n", currentDate)
+
+	objectHandler := client.Bucket(bucketName).Object(currentDate + "/" + file.Name())
 	writer := objectHandler.NewWriter(ctx)
 	if _, err := io.Copy(writer, file); err != nil {
 		return err
@@ -146,13 +149,14 @@ func uploadSnapshot(ctx context.Context, client *storage.Client, bucketName stri
 	if err := writer.Close(); err != nil {
 		return err
 	}
-	fmt.Printf("Blob %v uploaded.\n", "full")
+	fmt.Printf("Blob %q uploaded.\n", file.Name())
 
 	// Make this file public
 	acl := objectHandler.ACL()
 	if err := acl.Set(ctx, storage.AllUsers, storage.RoleReader); err != nil {
 		return err
 	}
+	fmt.Printf("Blob %q is public now.\n", file.Name())
 
 	return nil
 }
