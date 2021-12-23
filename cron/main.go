@@ -44,6 +44,9 @@ func main() {
 	// 	log.Fatalln(err.Error())
 	// }
 
+	os.Create("asdsadsa.full")
+	os.Create("dsadsadsad.rolling")
+
 	fmt.Println("get snapshot names")
 	snapshotfileNameFull, snapshotfileNamesRolling, err := getSnapshotNames()
 	if err != nil {
