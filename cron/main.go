@@ -37,12 +37,11 @@ func main() {
 	// 	log.Fatalln(err.Error())
 	// }
 
-	fmt.Println("Creating rolling snapshot now")
-
-	err := createSnapshot(true)
-	if err != nil {
-		log.Fatalln(err.Error())
-	}
+	// fmt.Println("Creating rolling snapshot now")
+	// err := createSnapshot(true)
+	// if err != nil {
+	// 	log.Fatalln(err.Error())
+	// }
 
 	os.Create("asdsadsa.full")
 	os.Create("dsadsadsad.rolling")
@@ -62,6 +61,12 @@ func main() {
 		log.Fatalf("Failed to create client: %v", err)
 	}
 	defer client.Close()
+
+	serviceAccount, err := client.ServiceAccount(ctx, "marigold-k8s")
+	if err != nil {
+		log.Fatalf("ServiceAccount: %v", err.Error())
+	}
+	fmt.Printf("The GCS service account is: %v\n", serviceAccount)
 
 	// Create folder
 
