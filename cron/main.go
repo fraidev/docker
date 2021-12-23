@@ -37,13 +37,14 @@ func main() {
 	// 	log.Fatalln(err.Error())
 	// }
 
-	fmt.Println("Creating rolling snapshot now")
+	// fmt.Println("Creating rolling snapshot now")
 
-	err := createSnapshot(true)
-	if err != nil {
-		log.Fatalln(err.Error())
-	}
+	// err := createSnapshot(true)
+	// if err != nil {
+	// 	log.Fatalln(err.Error())
+	// }
 
+	fmt.Println("get snapshot names")
 	snapshotfileNameFull, snapshotfileNamesRolling, err := getSnapshotNames()
 	if err != nil {
 		log.Fatalln(err.Error())
