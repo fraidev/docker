@@ -62,12 +62,6 @@ func main() {
 	}
 	defer client.Close()
 
-	serviceAccount, err := client.ServiceAccount(ctx, "marigold-k8s")
-	if err != nil {
-		log.Fatalf("ServiceAccount: %v", err.Error())
-	}
-	fmt.Printf("The GCS service account is: %v\n", serviceAccount)
-
 	// Create folder
 
 	// fmt.Println("Getting Files")
@@ -176,9 +170,11 @@ func uploadSnapshot(ctx context.Context, client *storage.Client, bucketName stri
 	objectHandler := client.Bucket(bucketName).Object(currentDate + "/" + file.Name())
 	writer := objectHandler.NewWriter(ctx)
 	if _, err := io.Copy(writer, file); err != nil {
+		fmt.Printf("Error Write Copy")
 		return err
 	}
 	if err := writer.Close(); err != nil {
+		fmt.Printf("Error Write Close")
 		return err
 	}
 	fmt.Printf("Blob %q uploaded.\n", file.Name())
