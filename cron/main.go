@@ -91,7 +91,7 @@ func main() {
 	fmt.Println("Uploading snapshot")
 	err = uploadSnapshot(ctx, client, bucketName, fileRolling)
 	if err != nil {
-		log.Fatalln(err.Error())
+		log.Fatalf("Failed to upload snapshot: %v", err)
 	}
 
 	// Delete local files
