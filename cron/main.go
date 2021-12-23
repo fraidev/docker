@@ -37,12 +37,12 @@ func main() {
 	// 	log.Fatalln(err.Error())
 	// }
 
-	// fmt.Println("Creating rolling snapshot now")
+	fmt.Println("Creating rolling snapshot now")
 
-	// err := createSnapshot(true)
-	// if err != nil {
-	// 	log.Fatalln(err.Error())
-	// }
+	err := createSnapshot(true)
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
 
 	os.Create("asdsadsa.full")
 	os.Create("dsadsadsad.rolling")
