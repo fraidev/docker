@@ -22,7 +22,7 @@ func NewSnapshotStorage(client *storage.Client, bucketName string) *SnapshotStor
 	return &SnapshotStorage{client: client, bucketName: bucketName}
 }
 
-func (s *SnapshotStorage) EphemeralUploadSnapshot(ctx context.Context, fileName string, rolling bool) {
+func (s *SnapshotStorage) EphemeralUpload(ctx context.Context, fileName string, rolling bool) {
 	fmt.Printf("Opening snapshot file %q.", fileName)
 	snapshotFile, err := os.Open(fileName)
 	if err != nil {

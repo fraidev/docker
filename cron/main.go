@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 
@@ -31,8 +30,8 @@ func main() {
 
 	snapshotfileNameFull, snapshotfileNamesRolling := snapshotExec.GetSnapshotsNames()
 
-	snapshotStorage.EphemeralUploadSnapshot(ctx, snapshotfileNameFull, false)
-	snapshotStorage.EphemeralUploadSnapshot(ctx, snapshotfileNamesRolling, true)
+	snapshotStorage.EphemeralUpload(ctx, snapshotfileNameFull, false)
+	snapshotStorage.EphemeralUpload(ctx, snapshotfileNamesRolling, true)
 
 	snapshotStorage.DeleteOldSnapshots(ctx, maxDays)
 }
