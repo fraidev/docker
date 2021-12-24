@@ -17,11 +17,12 @@ import (
 )
 
 func main() {
-	// bucketName := "tezos-snapshot-bucket"
-	bucketName := os.Getenv("BUCKET_NAME")
-	maxDays := getEnvInt("MAX_DAYS", 7)
-
 	ctx := context.Background()
+	maxDays := getEnvInt("MAX_DAYS", 7)
+	bucketName := os.Getenv("BUCKET_NAME")
+	if bucketName == "" {
+		log.Fatalln("The BUCKET_NAME environment variable is empty")
+	}
 
 	// fmt.Println("Creating full snapshot")
 	// // Create Snapshots
@@ -39,7 +40,7 @@ func main() {
 	os.Create("asdsadsa.full")
 	os.Create("dsadsadsad.rolling")
 
-	fmt.Println("get snapshot names")
+	fmt.Println("Get snapshot names")
 	snapshotfileNameFull, snapshotfileNamesRolling, err := getSnapshotNames()
 	if err != nil {
 		log.Fatalln(err.Error())
