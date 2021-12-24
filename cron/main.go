@@ -23,7 +23,6 @@ func main() {
 	}
 	defer client.Close()
 
-	fmt.Println("Creating full snapshot.")
 	snapshotStorage := NewSnapshotStorage(client, bucketName)
 	snapshotExec := NewSnapshotExec()
 
