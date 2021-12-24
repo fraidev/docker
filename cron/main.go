@@ -62,9 +62,6 @@ func main() {
 	}
 	defer client.Close()
 
-
-	client.ServiceAccount()
-
 	// Create folder
 
 	// fmt.Println("Getting Files")
