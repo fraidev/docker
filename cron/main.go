@@ -62,6 +62,9 @@ func main() {
 	}
 	defer client.Close()
 
+
+	client.ServiceAccount()
+
 	// Create folder
 
 	// fmt.Println("Getting Files")
@@ -108,8 +111,8 @@ func main() {
 	}
 
 	// Delete cloud old Files
-	fmt.Println("Deleting old snapshots")
-	deleteOldSnapshots(ctx, client, bucketName, maxDays)
+	// fmt.Println("Deleting old snapshots")
+	// deleteOldSnapshots(ctx, client, bucketName, maxDays)
 }
 
 func createSnapshot(rolling bool) error {
