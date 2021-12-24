@@ -23,7 +23,7 @@ func main() {
 	// err := viper.ReadInConfig()
 
 	bucketName := "tezos-snapshot-bucket"
-	maxDays := 3
+	// maxDays := 3
 
 	// bucketName := viper.GetString("BUCKET_NAME")
 	// maxDays := viper.GetInt("MAX_DAYS")
