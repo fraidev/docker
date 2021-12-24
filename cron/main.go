@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 	"time"
 
@@ -16,28 +17,20 @@ import (
 )
 
 func main() {
-	// viper := viper.New()
-	// viper.AddConfigPath(".")
-	// viper.SetConfigName("config")
-	// viper.SetConfigType("env")
-	// err := viper.ReadInConfig()
+	// bucketName := "tezos-snapshot-bucket"
+	bucketName := os.Getenv("BUCKET_NAME")
+	maxDays := getEnvInt("MAX_DAYS", 7)
 
-	bucketName := "tezos-snapshot-bucket"
-	// maxDays := 3
-
-	// bucketName := viper.GetString("BUCKET_NAME")
-	// maxDays := viper.GetInt("MAX_DAYS")
 	ctx := context.Background()
 
-	// fmt.Println("Creating full snapshot now")
-
+	// fmt.Println("Creating full snapshot")
 	// // Create Snapshots
 	// err := createSnapshot(false)
 	// if err != nil {
 	// 	log.Fatalln(err.Error())
 	// }
 
-	// fmt.Println("Creating rolling snapshot now")
+	// fmt.Println("Creating rolling snapshot")
 	// err := createSnapshot(true)
 	// if err != nil {
 	// 	log.Fatalln(err.Error())
@@ -108,8 +101,8 @@ func main() {
 	}
 
 	// Delete cloud old Files
-	// fmt.Println("Deleting old snapshots")
-	// deleteOldSnapshots(ctx, client, bucketName, maxDays)
+	fmt.Println("Deleting old snapshots")
+	deleteOldSnapshots(ctx, client, bucketName, maxDays)
 }
 
 func createSnapshot(rolling bool) error {
@@ -198,39 +191,65 @@ func deleteOldSnapshots(ctx context.Context, client *storage.Client, bucketName 
 			break
 		}
 		if err != nil {
-			fmt.Printf("listBucket: unable to list bucket %q: %v", bucketName, err)
+			fmt.Printf("listBucket: unable to list bucket %q: %v \n", bucketName, err)
 			return err
 		}
-		deleteFile(ctx, client, bucketName, maxDays, obj)
+
+		err = deleteFile(ctx, client, bucketName, maxDays, obj)
+		if err != nil {
+			fmt.Printf("%v \n", err)
+		}
+
 	}
 
 	return nil
 }
 
 func deleteFile(ctx context.Context, client *storage.Client, bucketName string, maxDays int, obj *storage.ObjectAttrs) error {
+	fmt.Printf("check if is needed delete %q. object \n", obj.Name)
+
 	paths := strings.Split(obj.Name, "/")
 
 	if len(paths) <= 0 {
-		return fmt.Errorf("invalid file name %q", obj.Name)
+		return fmt.Errorf("invalid file name %q. \n", obj.Name)
 	}
 
 	folderName := paths[0]
+	fmt.Printf("name folder is %q. \n", folderName)
+
 	t, err := time.Parse("2006.01.02", folderName)
 	if err != nil {
 		return err
 	}
+	fmt.Printf("date folder is %v. \n", t)
 
 	diff := time.Now().Sub(t)
-	diffDays := int(diff.Hours() / 24)
-	fmt.Printf("%d \n", diffDays)
+	fmt.Printf("date folder diff is %d. \n", diff)
 
-	if maxDays >= diffDays {
+	diffDays := int(diff.Hours() / 24)
+	fmt.Printf("date folder diffDays is %d. \n", diffDays)
+
+	if diffDays > maxDays {
+		fmt.Printf("Deleting %q object. \n", obj.Name)
+
 		objHandler := client.Bucket(bucketName).Object(obj.Name)
 		err = objHandler.Delete(ctx)
 		if err != nil {
 			return err
 		}
-		fmt.Printf("Object(%q).Delete: %v", obj.Name, err)
+		fmt.Printf("%q object deleted. \n", obj.Name)
 	}
 	return nil
+}
+
+func getEnvInt(key string, defaultValue int) int {
+	stringValue := os.Getenv(key)
+	if stringValue == "" {
+		return defaultValue
+	}
+	intValue, err := strconv.Atoi(stringValue)
+	if err != nil {
+		return defaultValue
+	}
+	return intValue
 }
